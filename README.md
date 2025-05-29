@@ -1,86 +1,68 @@
 # Layoff Risk AI Assistant
 
-This repository presents a multi-component AI system that detects layoff risk and provides empathetic support using Reddit layoff discussions. It combines **sentiment analysis**, **layoff risk scoring**, **topic modeling**, and a **fine-tuned language model assistant** to inform and comfort individuals navigating job uncertainty.
+This project presents a multi-component AI system designed to **detect layoff risk** and **offer empathetic support** using Reddit discussions and structured layoff datasets. It integrates **sentiment analysis**, **risk scoring**, and **retrieval-augmented generation (RAG)** to empower individuals facing career uncertainty.
 
-### Authors:
-**Lufan Wang**: lufanw@uw.edu  
+**Live Demo**: [http://10.19.66.229:5173/](http://10.19.66.229:5173/)
 
-## Project Overview
+## Author
 
-This project was developed as part of an **AI for Social Impact** initiative at the University of Washington (Spring 2025). The goal is to empower employees with early warning signs of layoffs using natural language patterns and assistive AI responses.
+**Lufan Wang**  
+Email: [lufanw@uw.edu](mailto:lufanw@uw.edu)  
+University of Washington
 
-## Dataset Information
+## Included Files
 
-**About the Dataset**  
-We scraped and curated comments from subreddits like `r/layoff`, `r/cscareerquestions`, and `r/techlayoffs`, focusing on posts with clear narrative context or emotional tone. Each comment was manually or semi-automatically labeled with:
-- **Sentiment**: `Negative`, `Neutral`, `Positive`
-- **Layoff Risk Score**: Heuristic score based on keywords like `"reorg"`, `"budget cuts"`, `"fired"`
-- **Risk Category**: `High`, `Medium`, `Low`
+| File Name                                | Description                                                                 |
+|------------------------------------------|-----------------------------------------------------------------------------|
+| `Layoffs.csv`                            | Historical layoff dataset scraped from [layoffs.fyi](https://layoffs.fyi) for trend analysis and model training. |
+| `layoff_comments_with_sentiment.csv`     | Curated Reddit comments annotated with sentiment labels and risk scores.   |
+| `Layoffs Prediction.ipynb`               | Jupyter notebook that explores predictive modeling using the `Layoffs.csv` dataset. |
+| `Reddit comments.ipynb`                  | Notebook analyzing Reddit posts using TF-IDF, logistic regression, and sentiment classification. |
+| `Claude with Layoff Embedding RAG Cookbook.ipynb` | A Retrieval-Augmented Generation (RAG) demo using Claude to answer layoff-related queries. |
 
-**Objective**  
-To train a model that can:
-- Detect emotional and structural indicators of impending layoffs
-- Provide empathetic feedback to users
-- Offer structured, explainable predictions using real employee language
 
-## 1. `sentiment_model.ipynb` — Sentiment Classification
+## Key Features
 
-Trains a baseline **logistic regression** model on Reddit comments:
-- Vectorized via **TF-IDF**
-- Evaluated with **accuracy**, **precision**, **recall**, and **confusion matrix**
-- Limitations: bias toward `neutral` class on small datasets
+- **Layoff Risk Prediction** from structured company layoff datasets
+- **Sentiment Classification** on Reddit comments using TF-IDF + logistic regression
+- **Visualization** of risk distributions and bigram trends
+- **RAG Assistant** to respond empathetically using vector search and LLMs
 
-## 2. `risk_scorer.py` — Layoff Risk Heuristics
 
-Implements a keyword-weighted scoring function:
-- Keywords like `"laid off"`, `"severance"`, `"terminated"` weighted `0.7–1.0`
-- Scores capped at `1.0` and converted into categories: `Low`, `Medium`, `High`
-- Integrated into the assistant’s real-time classification pipeline
+## Data Sources
 
-## 3. `topic_modeling.ipynb` — LDA Topic Discovery
+- **Layoff Records**: Collected from [Layoffs.fyi](https://layoffs.fyi/)
+- **Reddit Data**: Scraped from subreddit discussions including:
+  - `r/layoff`
+  - `r/techlayoffs`
+  - `r/cscareerquestions`
+- **Annotation Labels**:
+  - `Sentiment`: `Negative`, `Neutral`, `Positive`
+  - `Layoff Risk`: Heuristic score from `0.0` to `1.0` based on trigger keywords
+  - `Risk Category`: Classified as `Low`, `Medium`, or `High`
 
-Discovers thematic structure within layoff discussions:
-- Uses `CountVectorizer` + `LatentDirichletAllocation`
-- Topics include **job search struggles**, **team-wide reorgs**, **fake postings**, and **severance experiences**
 
-## 4. `layoff_assistant.ipynb` — GPT-Style Empathetic Assistant
+## Example Use Case
 
-Formats `.jsonl` data for fine-tuning a language model:
-- Each entry includes a `system` prompt, `user` input, and `assistant` reply
+A user enters:
 
-Example format:
-```json
-{
-  "messages": [
-    {"role": "system", "content": "You are an empathetic assistant helping users navigate layoff situations."},
-    {"role": "user", "content": "I was just laid off after 5 years at my job."},
-    {"role": "assistant", "content": "I'm so sorry to hear that. It's okay to feel overwhelmed. Have you been able to talk to anyone about next steps yet?"}
-  ]
-}
-```
+> "We had a surprise all-hands. Everyone's nervous."
 
-## 5. `demo_app.py` — Streamlit Interface
+The system responds with:
+- **Predicted Sentiment**: `Negative`
+- **Layoff Risk Level**: `High`
+- **Assistant Reply**: _"It’s understandable to feel anxious. Has leadership shared any specific updates? Let’s look at recent trends together."_
 
-- Accepts user-entered text
-- Displays predicted **sentiment** and **risk score**
-- Shows AI assistant's supportive reply
-- Fully local model architecture to ensure privacy
 
-## Visuals
+## Visualizations
 
-- Confusion matrix showing class bias and model performance
-- Bar plots of top bigrams (e.g., `"budget cuts"`, `"fired me"`)
-- Risk-level distribution chart
-- Topic keyword lists and sample comments
+- Confusion matrix for model performance
+- Layoff risk distribution histogram
+- LDA topic modeling results with top keywords per topic
+- Bigrams frequency analysis (e.g., `"budget cuts"`, `"fired me"`)
 
-## Citation
 
-- Reddit comments accessed under **fair use** guidelines for educational research
-- LLM fine-tuning conducted in accordance with OpenAI and Hugging Face usage policies
+## Citation & Usage
 
-## Next Steps
-
-- Improve labeling with **transformer-based sentiment classifiers**
-- Train on **1,000+ examples** for robust empathy generation
-- Integrate **retrieval-based memory** (e.g., company layoff histories)
-- Deploy as an **open-source HR advisory tool**
+- All Reddit-based content was accessed under **fair-use** for educational research purposes.
+- RAG-based assistant was developed using Claude/OpenAI APIs, adhering to their [usage policies](https://openai.com/policies/usage-policies).
